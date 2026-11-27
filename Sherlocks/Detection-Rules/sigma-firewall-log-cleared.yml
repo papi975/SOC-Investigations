@@ -1,1 +1,20 @@
-
+title: Suppression du Journal Pare-feu Windows
+id: b7a2e4d1-9c3f-4a8b-8e1d-2f5a6c7b8d9e
+status: experimental
+description: Détecte l'effacement du journal Windows Firewall With Advanced Security via l'Event ID 104.
+author: TonPseudo
+date: 2026-11-27
+logsource:
+    product: windows
+    service: system
+detection:
+    selection:
+        EventID: 104
+        Channel|contains: 'Firewall'
+    condition: selection
+falsepositives:
+    - Maintenance administrative planifiée
+level: high
+tags:
+    - attack.defense_evasion
+    - attack.t1070.001
