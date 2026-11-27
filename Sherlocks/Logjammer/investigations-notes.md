@@ -26,3 +26,22 @@
 - **Chemin du fichier exécuté :** `C:\Users\CyberJunkie\Desktop\Automation-HTB.ps1`
 - **Arguments :** `-A cyberjunkie@hackthebox.eu`
 - **Analyse :** L'utilisateur a mis en place une persistance quotidienne exécutant un script PowerShell depuis son Bureau avec une adresse e-mail en argument. Cela permet d'identifier le fichier à isoler/analyser et l'entrée à nettoyer lors de la remédiation.
+## 5. Détection et Blocage par l'Antivirus (Windows Defender)
+- **Artefact analysé :** `Microsoft-Windows-Windows Defender%4Operational.evtx`
+- **Event ID :** `1117` (Windows Defender a pris des mesures pour protéger cette machine contre les logiciels malveillants)
+- **Outil détecté :** `SharpHound` (Signature : `HackTool:MSIL/SharpHound!MSR`)
+- **Chemin complet :** `C:\Users\CyberJunkie\Downloads\SharpHound-v1.1.0.zip`
+- **Action entreprise :** `Quarantine` (Mise en quarantaine)
+- **Analyse :** L'utilisateur a téléchargé l'outil de reconnaissance Active Directory SharpHound (collecteur pour BloodHound). Windows Defender l'a détecté comme un outil de piratage (*HackTool*) de sévérité élevée et l'a immédiatement isolé en quarantaine.
+- ## 6. Activité PowerShell Suspecte
+- **Artefact analysé :** `Microsoft-Windows-PowerShell%4Operational.evtx`
+- **Event ID :** `4103` (Journalisation des pipelines de commandes)
+- **Horodatage (UTC) :** `27/03/2023 14:58:33`
+- **Utilisateur :** `DESKTOP-887GK2L\CyberJunkie`
+- **Commande exécutée :** `Get-FileHash -Algorithm md5 .\Desktop\Automation-HTB.ps1`
+- **Analyse :** L'utilisateur a calculé l'empreinte MD5 du script PowerShell `Automation-HTB.ps1` précédemment configuré dans la tâche planifiée (probablement pour vérifier son intégrité ou enregistrer son hash avant déploiement).
+- ## 7. Effacement de Journaux d'Événements (Anti-Forensics)
+- **Artefact analysé :** `System.evtx`
+- **Event ID :** `104` (Le fichier journal a été effacé)
+- **Journal effacé :** `Microsoft-Windows-Windows Firewall With Advanced Security/Firewall`
+- **Analyse :** L'utilisateur a tenté de couvrir ses traces après avoir ajouté la règle sortante `Metasploit C2 Bypass`. Cependant, Windows trace systématiquement l'action de suppression via l'événement `104` dans `System.evtx`, révélant l'intention malveillante.
